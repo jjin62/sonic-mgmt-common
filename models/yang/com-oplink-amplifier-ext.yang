@@ -1,0 +1,90 @@
+module com-oplink-amplifier-ext {
+
+  yang-version "1";
+
+  // namespace
+  namespace "http://com/oplink/amplifier-ext";
+
+  prefix "com-oplink-amplifier-ext";
+
+  import openconfig-optical-amplifier { prefix oc-opt-amp; }
+
+  organization "Oplink";
+ 
+  contact
+    "www.oplink.com";
+
+  description
+    "This model extend openconfig-optical-amplifier";
+
+  revision "2020-04-01" {
+    description
+      "Oplink Version 1.0";
+  }
+
+  grouping amplifier-config-ext {
+    description
+      "Configuration data for optical amplifiers";
+
+    leaf autolos {
+      type boolean;
+      description
+        "Determines the behavior of the amplifier on input LOS.";
+    }
+
+    leaf apr-enabled {
+      type boolean;
+      description
+        "Turns apr on / off to the amplifiers.";
+    }
+  }
+  
+  grouping osc-config-ext {
+    description
+      "Configuration data extension for OSC.";
+    leaf enabled {
+      type boolean;
+      description
+        "turn on/off sfp";
+    }
+  }
+
+  grouping osc-state-ext {
+    description
+      "State data extension for OSC.";
+    leaf drop-power {
+      type decimal64 {
+        fraction-digits 2;
+      }
+      units dBm;
+      description
+        "drop power";
+    }
+    leaf add-power {
+      type decimal64 {
+        fraction-digits 2;
+      }
+      units dBm;
+      description
+        "add power";
+    }
+
+  }
+
+  augment "/oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:config" {
+    uses amplifier-config-ext;
+  }
+  
+  augment "/oc-opt-amp:optical-amplifier/oc-opt-amp:amplifiers/oc-opt-amp:amplifier/oc-opt-amp:state" {
+    uses amplifier-config-ext;
+  }
+
+  augment "/oc-opt-amp:optical-amplifier/oc-opt-amp:supervisory-channels/oc-opt-amp:supervisory-channel/oc-opt-amp:config" {
+    uses osc-config-ext;
+  }
+
+  augment "/oc-opt-amp:optical-amplifier/oc-opt-amp:supervisory-channels/oc-opt-amp:supervisory-channel/oc-opt-amp:state" {
+    uses osc-config-ext;
+    uses osc-state-ext;
+  }
+}

@@ -1,0 +1,218 @@
+CONFIG_DB
+=========
+
+ATTENUATOR
+;/openconfig-optical-attenuator:optical-attenuators/attenuator/config
+;revision "2019-07-19" {reference "0.1.0"}
+key                 = ATTENUATOR|name  ; string
+;feild              = value
+attenuation-mode    = STRING                 ; identityref    
+target-output-power = float64                ; yang decimal64, json Number
+attenuation         = float64               
+enabled             = "true" / "false"       ; boolean    
+
+AMPLIFIER
+;/openconfig-optical-amplifier:optical-amplifiers/amplifier/config
+;revision "2019-12-06" {reference "0.5.0"}
+key                 = AMPLIFIER|name  ; string
+;feild              = value
+type                = STRING                 ; identityref
+target-gain         = float64                ; yang decimal64, json Number
+max-gain            = float64                ; yang decimal64, json Number
+min-gain            = float64                ; yang decimal64, json Number
+target-gain-tilt    = float64
+gain-range          = STRING                 ; identityref
+amp-mode            = STRING                 ; identityref
+target-output-power = float64                ; yang decimal64, json Number
+max-output-power    = float64                ; yang decimal64, json Number
+enabled             = "true" / "false"       ; boolean
+fiber-type-profile  = STRING                 ; identityref
+autolos             = "true" / "false"       ; oplink extension, APSD
+apr-enabled         = "true" / "false"       ; oplink extension 
+
+OSC
+;/openconfig-optical-amplifier:optical-supervisory-channels/supervisory-channel/config
+;revision "2019-12-06" {reference "0.5.0"}
+key                 = OSC|interface  ; string
+;feild              = value
+osc-sfp-enable      = "true"/ "false"      ; oplink extension
+
+OCM
+;/openconfig-channel-monitor:channel-monitors/channel-monitor/config
+;revision "2019-10-24" {reference "0.4.0"}
+key                 = OCM|name  ; string
+;feild              = value
+monitor-port        = STRING
+
+OTDR_COMMON; global config for Single mode fiber
+;/openconfig-gnoi-otdr:/optical-time-domain-reflectometer/config-common
+key                 = OTDR_COMMON|scan-type  ; string enum: short, medium, long
+;feild              = value
+acquisition-time-s     = uint32
+range-m?               = uint32
+pulse-width-ns      = uint32
+wavelength-mhz      = uint64
+sampling-resolution-m = decimal64
+fiber-type             = STRING ;identityref
+
+FIBER_PROFILE; default fiber profile (single mode)
+;/openconfig-gnoi-otdr:/optical-time-domain-reflectometer/fiber-profile
+key                  = "DEFAULT"; fixed key
+;field               = value
+refractive-index?        float
+backscatter-index?       float
+reflectance-threshold?   float
+splice-loss-threshold?   float
+fiber-end-threshold?     float
+
+OTDR
+;/openconfig-gnoi-otdr:/optical-time-domain-reflectometer/otdrs
+key                 = OTDR|name  ; string: port name 
+;feild              = value
+parent-port         = STRING;
+acquisition-time-s     = uint32
+range-m?               = uint32
+pulse-width-ns      = uint32
+wavelength-mhz      = uint64
+sample-resolution-m = decimal64
+fiber-type             = STRING ;identityref
+
+AUTO_GAIN
+;/com-oplink-control-loop:auto-gains
+key                          = AUTO_GAIN|name  ; string
+;feild                       = value
+;/com-oplink-control-loop:auto-gains/auto-gain/config
+number-of-carriers           = uint8
+fiber-type                   = STRING             ; enum
+launching-power-per-channel  = float64
+target-power-per-channel     = float64
+span-loss-threshold          = float64
+
+STATE_DB:
+=========
+ATTENUATOR_TABLE
+;/openconfig-optical-attenuator:optical-attenuators/attenuator/state
+key                 = ATTENUATOR_TABLE|name  ; string
+;feild              = value
+attenuation-mode    = STRING                 ; identityref
+target-output-power = float64                ; yang decimal64, json Number
+attenuation         = float64
+enabled             = "true" / "false"       ; boolean
+
+component           = STRING                 ; ref to platform component
+ingress-port        = STRING                 ; ref to platform component
+egress-port         = STRING                 ; ref to platform component
+actual-attenuation  = float64                ; instant value only
+output-power-total  = float64
+optical-return-loss  = float64
+
+AMPLIFIER_TABLE
+;/openconfig-optical-amplifier:optical-amplifiers/amplifier/state
+key                 = AMPLIFIER_TABLE|name  ; string
+;feild              = value
+type                = STRING                 ; identityref
+target-gain         = float64                ; yang decimal64, json Number
+max-gain            = float64                ; yang decimal64, json Number
+min-gain            = float64                ; yang decimal64, json Number
+target-gain-tilt    = float64
+gain-range          = STRING                 ; identityref
+amp-mode            = STRING                 ; identityref
+target-output-power = float64                ; yang decimal64, json Number
+max-output-power    = float64                ; yang decimal64, json Number
+enabled             = "true" / "false"       ; boolean
+fiber-type-profile  = STRING                 ; identityref
+autolos             = "true" / "false"       ; oplink extension, APSD
+apr-enabled         = "true" / "false"       ; oplink extension
+
+component           = STRING                 ; ref to platform component
+ingress-port        = STRING                 ; ref to platform component
+egress-port         = STRING                 ; ref to platform component
+actual-gain         = float64                ; instant value only
+actual-gain-tilt    = float64
+input-power-total   = float64
+input-power-c-band  = float64
+input-power-l-band  = float64
+output-power-total   = float64
+output-power-c-band = float64
+output-power-l-band = float64
+laser-bias-current  = float64
+optical-return-loss  = float64
+
+OSC_TABLE
+;/openconfig-optical-amplifier:optical-supervisory-channels/supervisory-channel/state
+key                 = OSC_TABLE|interface  ; string
+;feild              = value
+osc-sfp-enable      = "true"/ "false"      ; oplink extension
+
+input-power         = float64
+output-power        = float64
+drop-power          = float64              ; oplink extension, before VOA
+laser-bias-current  = float64
+output-frequency    = float64
+
+OCM_TABLE
+;/openconfig-channel-monitor:channel-monitors/channel-monitor/state
+key                 = OCM_TABLE|name  ; string
+;feild              = value
+monitor-port        = STRING
+
+OCM_CHANNEL
+;/openconfig-channel-monitor:channel-monitors/channel-monitor/channels
+key = OCM_CHANNEL|name|lower-frequency|upper-frequency
+                       ; name is key in OCM TABLE
+;feild              = value
+power               = float64             ; power
+
+OTDR_TABLE
+;/openconfig-gnoi-otdr:/optical-time-domain-reflectometer/otdrs/state
+key                 = OTDR_TABLE|name  ; string: port name 
+;feild              = value
+status              = STRING; enum: idle, measuring
+
+OTDR_RESULT
+;/openconfig-gnoi-otdr:/optical-time-domain-reflectometer/otdrs/state/scan-results/traces
+key                 = OTDR_RESULT|name|completion-time ; name is key in OTDRS 
+;feild              = value
+total-length-m      = uint32
+total-loss-db       = float64
+optical-return-loss-db = float64
+average-loss-db-km = float64
+discovered-fiber-type = STRING ;identityref
+event-count?        = uint32
+sor-file?           = STRING: file path on device
+baseline?           = "true" / "false" ;    boolean
+
+OTDR_EVENT
+;/openconfig-gnoi-otdr:/optical-time-domain-reflectometer/otdrs/state/scan-results/traces/events
+key  = OTDR_EVENT|name|completion-time|event-id ; name is key in OTDRS
+                                  ; completeion-time is key in OTDR_RESULT
+;field              = value
+event-type          = STRING; enum: otdr-event-type
+distance-m          = uint32
+loss-db             = float
+reflection-db       = float
+
+AUTO_GAIN_TABLE
+:/com-oplink-control-loop:auto-gains
+key                 = AUTO_GAIN_TABLE|name  ; string
+;feild              = value
+:/com-oplink-control-loop:auto-gains/auto-gain/state
+number-of-carriers           = uint8
+fiber-type                   = STRING             ; enum
+launching-power-per-channel  = float64
+target-power-per-channel     = float64
+span-loss-threshold          = float64
+
+span-loss                    = float64
+pre-amp-gain                 = float64
+pre-amp-voa                  = float64
+booster-amp-gain             = float64
+booster-amp-voa              = float64
+progress                     = unit8
+status                       = STRING ;enum
+last-booster-amp-voa         = float64
+last-span-loss               = float64
+local-osc-ip                 = STRING
+remote-osc-ip                = STRING
+remote-ip                    = STRING
+remote-node-name             = STRING
